@@ -1,6 +1,0 @@
-2026/02/18-04:57:05.944 728c Reusing MANIFEST C:\Users\FBC\Downloads\airtable\cgs_persistent_app_session_v9\Default\shared_proto_db/MANIFEST-000001
-2026/02/18-04:57:05.945 728c Recovering log #3
-2026/02/18-04:57:05.946 728c Reusing old log C:\Users\FBC\Downloads\airtable\cgs_persistent_app_session_v9\Default\shared_proto_db/000003.log 
-2026/02/18-04:57:06.862 4784 Level-0 table #5: started
-2026/02/18-04:57:06.868 4784 Level-0 table #5: 66006 bytes OK
-2026/02/18-04:57:06.871 4784 Delete type=0 #3
