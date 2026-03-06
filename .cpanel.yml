@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/cloudxhostingx/repositories/delta
+    - /bin/cp -R * $DEPLOYPATH
