@@ -3,26 +3,27 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, Legend } from "recharts"
 
-const weeklyData = [
-    { name: "Mon", returns: 4 },
-    { name: "Tue", returns: 3 },
-    { name: "Wed", returns: 7 },
-    { name: "Thu", returns: 2 },
-    { name: "Fri", returns: 5 },
-    { name: "Sat", returns: 1 },
-    { name: "Sun", returns: 0 },
-]
+interface ChartDataPoint {
+    name: string
+    returns: number
+}
 
-const reasonData = [
-    { name: "Bad State", value: 12 },
-    { name: "SNS Failed", value: 8 },
-    { name: "No Answer", value: 15 },
-    { name: "Refused", value: 5 },
-]
+interface ReasonDataPoint {
+    name: string
+    value: number
+}
+
+interface DashboardChartsProps {
+    weeklyData?: ChartDataPoint[]
+    reasonData?: ReasonDataPoint[]
+}
 
 const COLORS = ["#ef4444", "#f97316", "#3b82f6", "#10b981"]
 
-export function DashboardCharts() {
+export function DashboardCharts({ weeklyData = [], reasonData = [] }: DashboardChartsProps) {
+    // If no data given, fall back to something visually pleasing but clearly labeled if needed
+    // or just show empty zeros.
+
     return (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 mt-6">
             {/* Weekly Returns Chart */}
@@ -38,7 +39,9 @@ export function DashboardCharts() {
                 </CardHeader>
                 <CardContent className="pl-2 relative">
                     <ResponsiveContainer width="100%" height={350}>
-                        <BarChart data={weeklyData}>
+                        <BarChart data={weeklyData.length > 0 ? weeklyData : [
+                            { name: "Mon", returns: 0 }, { name: "Tue", returns: 0 }, { name: "Wed", returns: 0 }, { name: "Thu", returns: 0 }, { name: "Fri", returns: 0 }, { name: "Sat", returns: 0 }, { name: "Sun", returns: 0 }
+                        ]}>
                             <XAxis
                                 dataKey="name"
                                 stroke="#6366f1"
@@ -99,7 +102,7 @@ export function DashboardCharts() {
                     <ResponsiveContainer width="100%" height={350}>
                         <PieChart>
                             <Pie
-                                data={reasonData}
+                                data={reasonData.length > 0 ? reasonData : [{ name: "No Data", value: 1 }]}
                                 cx="50%"
                                 cy="50%"
                                 innerRadius={75}
@@ -109,9 +112,10 @@ export function DashboardCharts() {
                                 dataKey="value"
                                 stroke="none"
                             >
-                                {reasonData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
+                                {(reasonData.length > 0 ? reasonData : [{ name: "No Data", value: 1 }]).map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.name === "No Data" ? "#e2e8f0" : COLORS[index % COLORS.length]} />
+                                )) // end cell map
+                                }
                             </Pie>
                             <Tooltip
                                 contentStyle={{

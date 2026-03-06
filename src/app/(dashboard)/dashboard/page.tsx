@@ -14,13 +14,15 @@ export default async function DashboardPage() {
         totalReturns,
         totalProjects,
         totalRows,
-        recentActivity
+        recentActivity,
+        allPatientsRows,
+        recentReturnsRows
     ] = await Promise.all([
         prisma.row.count({
             where: { sheet: { name: 'Patients' } }
         }),
         prisma.row.count({
-            where: { sheet: { name: { in: ['CGM PTS', 'BRX PTs', 'CGM PST'] } } }
+            where: { sheet: { name: { in: ['CGM PTS', 'BRX PTs', 'CGM PST', 'CGM-Upcoming Orders'] } } }
         }),
         prisma.project.count(),
         prisma.row.count(),
@@ -32,8 +34,49 @@ export default async function DashboardPage() {
                     select: { name: true }
                 }
             }
+        }),
+        // Data for "Status Analysis" Pie Chart
+        prisma.row.findMany({
+            where: { sheet: { name: 'Patients' } },
+            select: { data: true },
+            take: 2000 // Sample size for performance
+        }),
+        // Data for "Weekly Metrics" Bar Chart
+        prisma.row.findMany({
+            where: {
+                sheet: { name: { in: ['Patients', 'CGM PTS', 'BRX PTs', 'CGM PST'] } },
+                updatedAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+            },
+            select: { updatedAt: true }
         })
     ])
+
+    // --- AGGREGATE DATA FOR CHARTS ---
+
+    // Status Analysis (Pie Chart)
+    // Column ID for "Reason for Return" is cmlbjpkt20041uw4s29bgiz3w
+    const reasonColId = "cmlbjpkt20041uw4s29bgiz3w"
+    const reasonsMap: Record<string, number> = {}
+    allPatientsRows.forEach(r => {
+        const d = r.data as any
+        const val = d[reasonColId] || (d['returned'] === true ? 'Returned' : 'Processed')
+        reasonsMap[val] = (reasonsMap[val] || 0) + 1
+    })
+    const reasonData = Object.entries(reasonsMap)
+        .map(([name, value]) => ({ name: name.toUpperCase(), value }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 4)
+
+    // Weekly Metrics (Bar Chart)
+    const dayMap: Record<number, number> = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 }
+    recentReturnsRows.forEach(r => {
+        const day = new Date(r.updatedAt).getDay()
+        dayMap[day]++
+    })
+    const dayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    const weeklyData = dayLabels.map((name, i) => ({ name, returns: dayMap[i] }))
+    // Reorder to put Monday first
+    const mondayFirst = [...weeklyData.slice(1), weeklyData[0]]
 
     // Calculate a mock revenue based on returns (e.g. $1892 per return average)
     const mockRevenue = totalReturns * 1892.45
@@ -152,7 +195,10 @@ export default async function DashboardPage() {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
                 {/* Charts Area */}
                 <div className="lg:col-span-4">
-                    <DashboardCharts />
+                    <DashboardCharts
+                        weeklyData={mondayFirst}
+                        reasonData={reasonData}
+                    />
                 </div>
 
                 {/* Recent Activity List */}

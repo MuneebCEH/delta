@@ -1,0 +1,2 @@
+[{"id":"cmkpqnyi80000uwn82a81coyy","name":"Admin User","email":"admin@example.com","password":"password123","image":null,"role":"ADMIN","createdAt":1769103699056,"updatedAt":1769103699056},
+{"id":"cmmeb7blo0000uweo9h1hy07m","name":"test","email":"muneebceh@gmail.com","password":"$2b$10$Vp.XAysZRWI2xXfwXzJkSun0TXPPt9GJxMu0OsDR1kE8vPN77SXuW","image":null,"role":"AGENT","createdAt":1772766165372,"updatedAt":1772766217844}]
