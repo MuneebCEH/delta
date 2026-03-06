@@ -422,7 +422,7 @@ run();
         fs.writeFileSync(scriptPath, automationScript);
 
         // 2. Run the script and wait for output
-        return new Promise((resolve) => {
+        return new Promise<NextResponse>((resolve) => {
             exec(`node ${scriptPath}`, (error, stdout, stderr) => {
                 const resultFile = path.join(process.cwd(), `cgs_result_${timestamp}.json`);
                 if (fs.existsSync(resultFile)) {
