@@ -17,8 +17,12 @@ async function seed() {
             return;
         }
 
-        // Create Admin
+        // Clear existing data to avoid conflicts
+        await client.query('DELETE FROM "WorkspaceMember"');
+        await client.query('DELETE FROM "Project"');
+        await client.query('DELETE FROM "Workspace"');
         await client.query('DELETE FROM "User" WHERE email = $1', ['admin@example.com']);
+
         const adminRes = await client.query('INSERT INTO "User" (id, email, password, role, name, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING id',
             ['admin-id-' + Date.now(), 'admin@example.com', 'password123', 'ADMIN', 'Admin User']);
         const adminId = adminRes.rows[0].id;
@@ -31,7 +35,7 @@ async function seed() {
         console.log('Workspace created.');
 
         // Create Member
-        await client.query('INSERT INTO "WorkspaceMember" (id, "userId", "workspaceId", role, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, NOW(), NOW())',
+        await client.query('INSERT INTO "WorkspaceMember" (id, "userId", "workspaceId", role) VALUES ($1, $2, $3, $4)',
             ['wm-id-' + Date.now(), adminId, wsId, 'OWNER']);
         console.log('Member linked.');
 
