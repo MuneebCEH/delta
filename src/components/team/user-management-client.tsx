@@ -207,7 +207,7 @@ export function UserManagementClient({ initialUsers }: { initialUsers: User[] })
                                         <UserPlus className="mr-2 h-5 w-5" /> New Member
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden max-w-md">
+                                <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-0 overflow-hidden max-w-md bg-white">
                                     <div className="bg-amber-500 p-8 text-slate-900">
                                         <DialogTitle className="text-2xl font-black tracking-tight mb-2">Invite Collaborator</DialogTitle>
                                         <DialogDescription className="text-slate-900/70 font-bold">
@@ -251,7 +251,7 @@ export function UserManagementClient({ initialUsers }: { initialUsers: User[] })
                                                     <SelectTrigger className="h-12 rounded-xl border-slate-100 font-bold">
                                                         <SelectValue />
                                                     </SelectTrigger>
-                                                    <SelectContent className="rounded-xl border-slate-100">
+                                                    <SelectContent className="rounded-xl border-slate-100 bg-white">
                                                         <SelectItem value="AGENT">Agent (Limited Access)</SelectItem>
                                                         <SelectItem value="MANAGER">Manager (Operational Access)</SelectItem>
                                                         <SelectItem value="ADMIN">Admin (Full Access)</SelectItem>

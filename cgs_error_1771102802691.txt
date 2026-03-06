@@ -1,0 +1,5 @@
+TimeoutError: Waiting for selector `input[type="text"]` failed
+    at Function.waitFor (C:\Users\FBC\Downloads\airtable\node_modules\puppeteer-core\src\common\QueryHandler.ts:213:36)
+    at async CdpFrame.waitForSelector (C:\Users\FBC\Downloads\airtable\node_modules\puppeteer-core\src\api\Frame.ts:741:13)
+    at async CdpPage.waitForSelector (C:\Users\FBC\Downloads\airtable\node_modules\puppeteer-core\src\api\Page.ts:3090:12)
+    at async run (C:\Users\FBC\Downloads\airtable\scripts\run_samesimilar.js:72:13)

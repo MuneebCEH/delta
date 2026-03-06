@@ -1,0 +1,44 @@
+[
+  {
+    "tag": "INPUT",
+    "id": "btnLogin",
+    "name": "",
+    "type": "submit",
+    "value": "Log In to DME myCGS       >",
+    "placeholder": "",
+    "isVisible": true,
+    "text": "",
+    "options": null
+  },
+  {
+    "tag": "INPUT",
+    "id": "",
+    "name": "",
+    "type": "submit",
+    "value": "Register for DME myCGS  >",
+    "placeholder": "",
+    "isVisible": true,
+    "text": "",
+    "options": null
+  },
+  {
+    "tag": "BUTTON",
+    "id": "QSIFeedbackButton-btn",
+    "name": "",
+    "type": "submit",
+    "value": "",
+    "isVisible": false,
+    "text": "Feedback",
+    "options": null
+  },
+  {
+    "tag": "BUTTON",
+    "id": "QSIFeedbackButton-close-btn",
+    "name": "",
+    "type": "submit",
+    "value": "",
+    "isVisible": true,
+    "text": "",
+    "options": null
+  }
+]

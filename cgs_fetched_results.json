@@ -1,0 +1,26 @@
+[
+  [
+    [
+      "TPID",
+      "NPI",
+      "PTAN",
+      "Region",
+      "IsActive",
+      "IsDefault",
+      "OrgId",
+      "UserRole"
+    ]
+  ],
+  [
+    [
+      "TPID",
+      "NPI",
+      "PTAN",
+      "Region",
+      "IsActive",
+      "IsDefault",
+      "OrgId",
+      "UserRole"
+    ]
+  ]
+]

@@ -1,0 +1,30 @@
+Help  | IVR (JB): 877-299-7900  |  Customer Support (JB): 866-590-6727
+   IVR (JC): 866-238-9650  |  Customer Support (JC): 866-270-4909
+Multifactor Authentication (MFA)
+Enter Security Code
+
+A Security Code is required to complete your login.
+
+To retrieve a Security Code, please select the Mobile Phone or E-mail that you registered as your Multi-Factor Authentication (MFA) device when you originally requested access, from the MFA Device Type(s) shown.
+
+Security Codes expire. Be sure to enter your Security Code promptly.
+
+Need to Register an MFA Device?
+
+If you have not registered an MFA device and would like to do so now, you may use the "Register MFA Device" link. For security purposes you will be prompted to login again and answer your challenge questions before registering an MFA device.
+
+New! Google Authenticator Option
+
+You can now use Google Authenticator for quicker entry into this portal. For more information and to set up this option, choose Update MFA Options from the My Account once you have logged in.
+
+Multifactor Authentication Entry (MFA) for 1qs9jei
+Enter your MFA code into the box below:
+SUBMIT
+ EMAIL ME
+Instructions: Enter your current Google Authenticator code now or choose one of the above options to receive a code. When you receive your code, enter it in the box above.
+
+Note: Message and data rates may apply.
+An ISO 9001:2015 certified company
+Disclaimer  |  Privacy Notice  |  Terms and Conditions
+© 2026 CGS Administrators, LLC All rights reserved.
+Feedback

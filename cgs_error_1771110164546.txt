@@ -1,0 +1,2 @@
+ReferenceError: fixErrors is not defined
+    at run (C:\Users\FBC\Downloads\airtable\scripts\run_samesimilar.js:163:9)

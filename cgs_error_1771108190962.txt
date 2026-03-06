@@ -1,0 +1,4 @@
+Error: No element found for selector: input[type="text"]
+    at assert (C:\Users\FBC\Downloads\airtable\node_modules\puppeteer-core\src\util\assert.ts:19:11)
+    at CdpFrame.focus (C:\Users\FBC\Downloads\airtable\node_modules\puppeteer-core\src\api\Frame.ts:1077:11)
+    at async run (C:\Users\FBC\Downloads\airtable\scripts\run_samesimilar.js:83:13)

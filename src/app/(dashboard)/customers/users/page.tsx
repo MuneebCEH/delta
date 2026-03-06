@@ -9,8 +9,7 @@ import {
     Unlock,
     ExternalLink,
     Filter,
-    Search,
-    Circle
+    Search
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -122,7 +121,7 @@ export default function ClientUsersPage() {
                                 <div className="flex justify-between items-center">
                                     <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">Role</span>
                                     <Badge className={`rounded-lg px-3 py-1 font-black text-[10px] uppercase tracking-wider ${user.role === 'Admin' ? 'bg-amber-100 text-amber-700' :
-                                            user.role === 'Editor' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'
+                                        user.role === 'Editor' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-600'
                                         } border-none`}>
                                         {user.role}
                                     </Badge>

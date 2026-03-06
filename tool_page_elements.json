@@ -1,0 +1,18 @@
+[
+  {
+    "id": "btnLogin",
+    "name": "",
+    "type": "submit",
+    "placeholder": "",
+    "label": "Log In",
+    "value": "Log In to DME myCGS       >"
+  },
+  {
+    "id": "",
+    "name": "",
+    "type": "submit",
+    "placeholder": "",
+    "label": "",
+    "value": "Register for DME myCGS  >"
+  }
+]

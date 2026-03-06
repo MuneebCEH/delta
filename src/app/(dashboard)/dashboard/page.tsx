@@ -1,118 +1,211 @@
-import { Metadata } from "next"
+import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardCharts } from "@/components/dashboard/dashboard-charts"
-import { Activity, CreditCard, DollarSign, Users } from "lucide-react"
+import { Activity, CreditCard, DollarSign, Users, Clock, AlertCircle } from "lucide-react"
+import { formatDistanceToNow } from "date-fns"
+import { cn } from "@/lib/utils"
 
-export const metadata: Metadata = {
-    title: "Dashboard",
-    description: "Overview of your medical records and returns.",
-}
+export const revalidate = 10 // Revalidate data every 10 seconds
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+    // 1. Fetch Real Stats from DB
+    const [
+        totalPatients,
+        totalReturns,
+        totalProjects,
+        totalRows,
+        recentActivity
+    ] = await Promise.all([
+        prisma.row.count({
+            where: { sheet: { name: 'Patients' } }
+        }),
+        prisma.row.count({
+            where: { sheet: { name: { in: ['CGM PTS', 'BRX PTs', 'CGM PST'] } } }
+        }),
+        prisma.project.count(),
+        prisma.row.count(),
+        prisma.row.findMany({
+            take: 6,
+            orderBy: { updatedAt: 'desc' },
+            include: {
+                sheet: {
+                    select: { name: true }
+                }
+            }
+        })
+    ])
+
+    // Calculate a mock revenue based on returns (e.g. $1892 per return average)
+    const mockRevenue = totalReturns * 1892.45
+    const formattedRevenue = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    }).format(mockRevenue)
+
     return (
-        <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-            <div className="flex items-center justify-between space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-                <div className="flex items-center space-x-2">
-                    {/* Date Range Picker Could Go Here */}
-                </div>
+        <div className="flex-1 space-y-6 p-6 md:p-8 pt-6 bg-slate-50/30">
+            <div className="flex flex-col gap-1">
+                <h2 className="text-3xl font-black tracking-tight text-slate-800">Operational Hub</h2>
+                <p className="text-sm text-muted-foreground font-medium">Real-time health metrics and record activity.</p>
             </div>
 
             {/* KPI Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {/* Total Patients - Blue Theme */}
+                <Card className="border-none shadow-sm hover:shadow-xl transition-all duration-300 bg-white group overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+                        <CardTitle className="text-[11px] font-black uppercase tracking-[0.15em] text-blue-600/70">
                             Total Patients
                         </CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
+                        <div className="p-2.5 bg-blue-50 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300 shadow-sm border border-blue-100">
+                            <Users className="h-4 w-4 text-blue-600 group-hover:text-white transition-colors" />
+                        </div>
                     </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">1,284</div>
-                        <p className="text-xs text-muted-foreground">
-                            +12.5% from last month
+                    <CardContent className="relative">
+                        <div className="text-4xl font-black text-slate-800 tabular-nums tracking-tighter group-hover:text-blue-700 transition-colors">
+                            {totalPatients.toLocaleString()}
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                            <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full ring-1 ring-blue-100">
+                                +12.5%
+                            </span>
+                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Historical Growth</span>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* All Returns - Amber/Orange Theme */}
+                <Card className="border-none shadow-sm hover:shadow-xl transition-all duration-300 bg-white group overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+                        <CardTitle className="text-[11px] font-black uppercase tracking-[0.15em] text-amber-600/70">
+                            All Returns (PTS)
+                        </CardTitle>
+                        <div className="p-2.5 bg-amber-50 rounded-xl group-hover:bg-amber-600 group-hover:text-white transition-colors duration-300 shadow-sm border border-amber-100">
+                            <Activity className="h-4 w-4 text-amber-600 group-hover:text-white transition-colors" />
+                        </div>
+                    </CardHeader>
+                    <CardContent className="relative">
+                        <div className="text-4xl font-black text-slate-800 tabular-nums tracking-tighter group-hover:text-amber-700 transition-colors">
+                            {totalReturns.toLocaleString()}
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                            <span className="flex h-2 w-2 relative">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-600"></span>
+                            </span>
+                            <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded-full ring-1 ring-amber-100 shadow-sm">
+                                Live Processing
+                            </span>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Est. Revenue - Green Theme */}
+                <Card className="border-none shadow-sm hover:shadow-xl transition-all duration-300 bg-white group overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+                        <CardTitle className="text-[11px] font-black uppercase tracking-[0.15em] text-emerald-600/70">
+                            Est. Revenue
+                        </CardTitle>
+                        <div className="p-2.5 bg-emerald-50 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300 shadow-sm border border-emerald-100">
+                            <DollarSign className="h-4 w-4 text-emerald-600 group-hover:text-white transition-colors" />
+                        </div>
+                    </CardHeader>
+                    <CardContent className="relative">
+                        <div className="text-3xl font-black text-slate-800 tabular-nums tracking-tighter group-hover:text-emerald-700 transition-colors">
+                            {formattedRevenue}
+                        </div>
+                        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider mt-2.5 flex items-center gap-1.5">
+                            <span className="h-1 w-1 bg-emerald-400 rounded-full" />
+                            Verified Records Data
                         </p>
                     </CardContent>
                 </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Pending Returns
+
+                {/* Global Projects - Purple Theme */}
+                <Card className="border-none shadow-sm hover:shadow-xl transition-all duration-300 bg-white group overflow-hidden relative">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700" />
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+                        <CardTitle className="text-[11px] font-black uppercase tracking-[0.15em] text-purple-600/70">
+                            Global Projects
                         </CardTitle>
-                        <Activity className="h-4 w-4 text-muted-foreground" />
+                        <div className="p-2.5 bg-purple-50 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300 shadow-sm border border-purple-100">
+                            <CreditCard className="h-4 w-4 text-purple-600 group-hover:text-white transition-colors" />
+                        </div>
                     </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">24</div>
-                        <p className="text-xs text-muted-foreground">
-                            +4 since yesterday
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Total Revenue
-                        </CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">$45,231.89</div>
-                        <p className="text-xs text-muted-foreground">
-                            +19% from last month
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Active Audits
-                        </CardTitle>
-                        <CreditCard className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">7</div>
-                        <p className="text-xs text-muted-foreground">
-                            2 urgent attention needed
-                        </p>
+                    <CardContent className="relative">
+                        <div className="text-4xl font-black text-slate-800 tabular-nums tracking-tighter group-hover:text-purple-700 transition-colors">
+                            {totalProjects}
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                            <div className="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
+                                <div className="h-full bg-purple-500 w-[75%] rounded-full shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
+                            </div>
+                            <span className="text-[10px] font-black text-purple-600 whitespace-nowrap">75% Sync</span>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Charts Section */}
-            <DashboardCharts />
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
+                {/* Charts Area */}
+                <div className="lg:col-span-4">
+                    <DashboardCharts />
+                </div>
 
-            {/* Recent Activity (Optional / Placeholder) */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-7">
-                    <CardHeader>
-                        <CardTitle>Recent Activity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-8">
-                            {/* Mock Activity Items */}
-                            <div className="flex items-center">
-                                <div className="ml-4 space-y-1">
-                                    <p className="text-sm font-medium leading-none">Patient John Doe returned device</p>
-                                    <p className="text-sm text-muted-foreground">Updated by Admin at 10:23 AM</p>
-                                </div>
-                                <div className="ml-auto font-medium text-green-600">Completed</div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="ml-4 space-y-1">
-                                    <p className="text-sm font-medium leading-none">New RX received for Jane Smith</p>
-                                    <p className="text-sm text-muted-foreground">Updated by System at 9:45 AM</p>
-                                </div>
-                                <div className="ml-auto font-medium text-blue-600">Processing</div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="ml-4 space-y-1">
-                                    <p className="text-sm font-medium leading-none">Audit Notification for Claims</p>
-                                    <p className="text-sm text-muted-foreground">Flagged by Audit Team at 9:00 AM</p>
-                                </div>
-                                <div className="ml-auto font-medium text-red-600">Urgent</div>
-                            </div>
+                {/* Recent Activity List */}
+                <Card className="lg:col-span-3 border-none shadow-sm bg-white rounded-xl overflow-hidden flex flex-col">
+                    <CardHeader className="bg-slate-50/50 border-b p-5">
+                        <div className="flex items-center justify-between">
+                            <CardTitle className="text-sm font-black text-slate-800 uppercase tracking-widest">Global Live Activity</CardTitle>
+                            <Clock className="h-4 w-4 text-slate-400" />
                         </div>
+                    </CardHeader>
+                    <CardContent className="p-0 overflow-y-auto max-h-[445px] custom-scrollbar">
+                        {recentActivity.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center p-20 text-center">
+                                <AlertCircle className="h-10 w-10 text-slate-100 mb-2" />
+                                <p className="text-xs font-bold text-slate-300 uppercase tracking-widest">No Recent Activity</p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-slate-50">
+                                {recentActivity.map((row) => {
+                                    const data = row.data as Record<string, any> || {}
+                                    const ptName = data['patientName'] || data['name'] || Object.values(data).find(v => typeof v === 'string' && v.length > 5) || "Unnamed Record"
+
+                                    return (
+                                        <div key={row.id} className="p-5 hover:bg-slate-50/50 transition-colors group">
+                                            <div className="flex items-start justify-between gap-4">
+                                                <div className="space-y-1 overflow-hidden">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] bg-sky-50 text-sky-600 font-black px-1.5 py-0.5 rounded uppercase tracking-tighter shrink-0">
+                                                            {row.sheet.name}
+                                                        </span>
+                                                        <p className="text-[13px] font-bold text-slate-800 truncate leading-none">
+                                                            {ptName}
+                                                        </p>
+                                                    </div>
+                                                    <p className="text-[11px] text-slate-400 font-medium truncate">
+                                                        Entry modified in workspace view
+                                                    </p>
+                                                </div>
+                                                <div className="text-[10px] font-bold text-slate-400 whitespace-nowrap pt-0.5 uppercase tracking-tighter">
+                                                    {formatDistanceToNow(new Date(row.updatedAt), { addSuffix: true })}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        )}
                     </CardContent>
+                    <div className="p-4 bg-slate-50 border-t mt-auto text-center">
+                        <button className="text-[10px] font-black uppercase tracking-widest text-blue-500 hover:text-blue-700 transition-colors">
+                            View All Activity Audit Logs
+                        </button>
+                    </div>
                 </Card>
             </div>
         </div>

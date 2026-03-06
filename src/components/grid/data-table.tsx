@@ -53,8 +53,8 @@ import {
 
 declare module "@tanstack/react-table" {
     interface TableMeta<TData extends RowData> {
-        updateData: (rowId: string, columnId: string, value: any) => void
-        openProfile: (row: any) => void
+        updateData: (rowId: string, columnId: string, value: unknown) => void
+        openProfile: (row: TData) => void
         deleteRows: (rowIds: string[]) => void
     }
 }
@@ -89,10 +89,10 @@ const EditableCell = ({
     column,
     table,
 }: {
-    getValue: () => any
-    row: any
+    getValue: () => unknown
+    row: { id: string, original: GridRow }
     column: GridColumn
-    table: any
+    table: { options: { meta?: { updateData: (rowId: string, columnId: string, value: unknown) => void, openProfile: (row: GridRow) => void } } }
 }) => {
     const initialValue = getValue()
     const [value, setValue] = React.useState(initialValue)
@@ -321,7 +321,7 @@ const EditableCell = ({
                         if (!open) onBlur()
                         setIsDialogOpen(open)
                     }}>
-                        <DialogContent className="max-w-2xl">
+                        <DialogContent className="max-w-2xl bg-white">
                             <DialogHeader className="border-b pb-2">
                                 <DialogTitle className="flex items-center gap-2 text-amber-700">
                                     <FileText className="h-4 w-4" /> {column.name}
@@ -381,7 +381,7 @@ const EditableCell = ({
                         if (!open) onBlur()
                         setIsDialogOpen(open)
                     }}>
-                        <DialogContent className="max-w-2xl">
+                        <DialogContent className="max-w-2xl bg-white">
                             <DialogHeader className="border-b pb-2">
                                 <DialogTitle className="flex items-center gap-2 text-amber-700">
                                     <Type className="h-4 w-4" /> {column.name}
@@ -609,7 +609,7 @@ export function DataTable({
 
     const [aiAnalysisResult, setAiAnalysisResult] = React.useState<string | null>(null)
 
-    const updateData = (rowId: string, columnId: string, value: any) => {
+    const updateData = (rowId: string, columnId: string, value: unknown) => {
         if (isSelectionMode) return // Prevent editing in selection mode
 
         setData((old) => {

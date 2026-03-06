@@ -56,7 +56,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-[#020617] p-6 relative overflow-hidden font-sans selection:bg-blue-500/30">
+        <div className="min-h-screen w-full flex items-center justify-center bg-[#020617] p-6 relative overflow-auto font-sans selection:bg-blue-500/30">
             {/* Cinematic Background Elements */}
             <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-600/10 rounded-full blur-[160px] animate-pulse" />
             <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 rounded-full blur-[160px] animate-pulse [animation-delay:2s]" />
@@ -143,7 +143,7 @@ export default function LoginPage() {
 
                             <div className="space-y-6">
                                 <div className="space-y-3">
-                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 ml-1">Secure Identiy</label>
+                                    <label className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 ml-1">Secure Identity</label>
                                     <div className="relative group/field">
                                         <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within/field:text-blue-500 transition-colors duration-500">
                                             <Mail className="h-5 w-5" />

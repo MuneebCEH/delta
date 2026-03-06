@@ -25,7 +25,14 @@ import {
     MessageSquare,
     BarChart3,
     User,
-    ChevronDown
+    ChevronDown,
+    ClipboardCheck,
+    Activity,
+    FileText,
+    ShieldCheck,
+    Cpu,
+    Search,
+    FileSearch
 } from "lucide-react"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
@@ -54,7 +61,7 @@ export function MainSidebar({ className }: SidebarProps) {
                     size="icon"
                     onClick={() => setIsCollapsed(!isCollapsed)}
                     className={cn(
-                        "shrink-0 hover:bg-slate-100 text-slate-900",
+                        "shrink-0 hover:bg-red-600 hover:text-white text-slate-900 transition-colors duration-200",
                         isCollapsed ? "h-10 w-10" : "h-8 w-8"
                     )}
                 >
@@ -62,7 +69,7 @@ export function MainSidebar({ className }: SidebarProps) {
                 </Button>
             </div>
 
-            <ScrollArea className="flex-1">
+            <div className="flex-1 overflow-y-auto custom-scrollbar min-h-0">
                 <div className="space-y-4 py-4 px-3">
                     <div className="space-y-1">
                         {!isCollapsed && (
@@ -96,6 +103,63 @@ export function MainSidebar({ className }: SidebarProps) {
                             icon={<FolderKanban className="h-4 w-4" />}
                             label="Projects"
                             active={pathname === "/projects"}
+                            collapsed={isCollapsed}
+                        />
+                    </div>
+
+                    <div className="space-y-1">
+                        {!isCollapsed && (
+                            <h2 className="mb-2 px-4 text-xs font-semibold tracking-wider text-slate-400 uppercase">
+                                DMS
+                            </h2>
+                        )}
+                        <SidebarItem
+                            href="/dms/eligibility"
+                            icon={<ClipboardCheck className="h-4 w-4" />}
+                            label="Eligibility"
+                            active={pathname === "/dms/eligibility"}
+                            collapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            href="/dms/dde"
+                            icon={<Activity className="h-4 w-4" />}
+                            label="DDE"
+                            active={pathname === "/dms/dde"}
+                            collapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            href="/dms/claims"
+                            icon={<FileText className="h-4 w-4" />}
+                            label="Claims"
+                            active={pathname === "/dms/claims"}
+                            collapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            href="/dms/pecos"
+                            icon={<ShieldCheck className="h-4 w-4" />}
+                            label="PECOS"
+                            active={pathname === "/dms/pecos"}
+                            collapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            href="/dms/smartdde"
+                            icon={<Cpu className="h-4 w-4" />}
+                            label="SmartDDE"
+                            active={pathname === "/dms/smartdde"}
+                            collapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            href="/samesimilar"
+                            icon={<Table2 className="h-4 w-4" />}
+                            label="Same or Similar"
+                            active={pathname === "/samesimilar"}
+                            collapsed={isCollapsed}
+                        />
+                        <SidebarItem
+                            href="/dms/mbi-lookup"
+                            icon={<Search className="h-4 w-4" />}
+                            label="MBI Lookup"
+                            active={pathname === "/dms/mbi-lookup"}
                             collapsed={isCollapsed}
                         />
                     </div>
@@ -321,7 +385,7 @@ export function MainSidebar({ className }: SidebarProps) {
                         />
                     </div>
                 </div>
-            </ScrollArea>
+            </div>
         </div>
     )
 }
@@ -353,7 +417,7 @@ function SidebarCollapsibleItem({
                 className={cn(
                     "w-full transition-all duration-200",
                     collapsed ? "justify-center px-0" : "justify-start px-4",
-                    active && !isOpen ? "bg-amber-100/50 text-slate-900 hover:bg-amber-100" : "text-slate-900 hover:bg-slate-100"
+                    active && !isOpen ? "bg-amber-100/50 text-slate-900 hover:bg-red-600 hover:text-white" : "text-slate-900 hover:bg-red-600 hover:text-white transition-colors duration-200"
                 )}
                 title={collapsed ? label : undefined}
             >
@@ -410,7 +474,7 @@ function SidebarItem({
                 "w-full transition-all duration-200",
                 collapsed ? "justify-center px-0" : "justify-start",
                 isSubItem ? "pl-11 pr-4 h-9" : "px-4",
-                active ? "bg-amber-100/50 text-slate-900 hover:bg-amber-100" : "text-slate-900 hover:bg-slate-100"
+                active ? "bg-amber-100/50 text-slate-900 hover:bg-red-600 hover:text-white" : "text-slate-900 hover:bg-red-600 hover:text-white transition-colors duration-200"
             )}
             title={collapsed ? label : undefined}
         >

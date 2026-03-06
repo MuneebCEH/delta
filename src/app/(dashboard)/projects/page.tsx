@@ -1,5 +1,4 @@
-import { getProjects, createProject } from "@/app/actions/projects"
-import { Button } from "@/components/ui/button"
+import { getProjects } from "@/app/actions/projects"
 import {
     Card,
     CardContent,
@@ -8,25 +7,14 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Plus } from "lucide-react"
 import Link from "next/link"
+import { CreateProjectDialog } from "@/components/projects/create-project-dialog"
 
 export default async function ProjectsPage() {
     const projects = await getProjects()
 
     return (
-        <div className="space-y-6">
+        <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
@@ -34,54 +22,7 @@ export default async function ProjectsPage() {
                         Manage your projects and data sheets.
                     </p>
                 </div>
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" /> Create Project
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                        <form action={async (formData) => {
-                            "use server"
-                            await createProject(formData)
-                        }}>
-                            <DialogHeader>
-                                <DialogTitle>Create Project</DialogTitle>
-                                <DialogDescription>
-                                    Create a new project workspace for your team.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="name" className="text-right">
-                                        Name
-                                    </Label>
-                                    <Input
-                                        id="name"
-                                        name="name"
-                                        placeholder="Project Alpha"
-                                        className="col-span-3"
-                                        required
-                                    />
-                                </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="description" className="text-right">
-                                        Description
-                                    </Label>
-                                    <Input
-                                        id="description"
-                                        name="description"
-                                        placeholder="Short description..."
-                                        className="col-span-3"
-                                    />
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button type="submit">Create Project</Button>
-                            </DialogFooter>
-                        </form>
-                    </DialogContent>
-                </Dialog>
+                <CreateProjectDialog />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

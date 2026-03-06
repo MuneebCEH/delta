@@ -112,7 +112,7 @@ export function SheetNavigation({ sheets, activeSheetId, onSheetChange, projectI
                                         )}
                                     </button>
                                 </div>
-                                <DropdownMenuContent align="start">
+                                <DropdownMenuContent align="start" className="bg-white">
                                     <DropdownMenuItem onClick={() => startRename(sheet.id, sheet.name)}>
                                         <Edit2 className="mr-2 h-4 w-4" /> Rename
                                     </DropdownMenuItem>
