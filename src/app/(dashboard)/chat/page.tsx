@@ -66,7 +66,9 @@ export default function ChatRoomPage() {
                     if (channelsData.length > 0) setActiveChannel(channelsData[0])
                 }
                 if (Array.isArray(usersData)) {
-                    setUsers(usersData.filter(u => u.email !== session?.user?.email))
+                    console.log('Chat users loaded:', usersData.length);
+                    // Show all users to verify fetching works, can filter self later
+                    setUsers(usersData)
                 }
             } catch (err) {
                 console.error('Failed to load chat data:', err)
