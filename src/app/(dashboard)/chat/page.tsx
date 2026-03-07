@@ -29,7 +29,7 @@ interface Channel {
 }
 
 export default function ChatRoomPage() {
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
     const [channels, setChannels] = React.useState<Channel[]>([])
     const [activeChannel, setActiveChannel] = React.useState<Channel | null>(null)
     const [messages, setMessages] = React.useState<Message[]>([])
@@ -39,7 +39,10 @@ export default function ChatRoomPage() {
 
     // Load Channels
     React.useEffect(() => {
-        fetch('/api/chat/channels')
+        if (status === "loading") return;
+
+        const controller = new AbortController();
+        fetch('/api/chat/channels', { signal: controller.signal })
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -49,10 +52,13 @@ export default function ChatRoomPage() {
                 setIsLoading(false)
             })
             .catch(err => {
-                console.error('Failed to load channels:', err)
-                setIsLoading(false)
+                if (err.name !== 'AbortError') {
+                    console.error('Failed to load channels:', err)
+                    setIsLoading(false)
+                }
             })
-    }, [])
+        return () => controller.abort()
+    }, [status])
 
     // Polling for messages
     const fetchMessages = React.useCallback(() => {
@@ -123,7 +129,7 @@ export default function ChatRoomPage() {
     }
 
     return (
-        <div className="flex h-full overflow-hidden bg-white">
+        <div className="flex w-full h-[calc(100vh-56px)] overflow-hidden bg-white">
             {/* Channels Sidebar */}
             <div className="w-72 border-r bg-slate-50/50 flex flex-col shrink-0">
                 <div className="p-6 border-b bg-white">
