@@ -42,8 +42,14 @@ export default function ChatRoomPage() {
         fetch('/api/chat/channels')
             .then(res => res.json())
             .then(data => {
-                setChannels(data)
-                if (data.length > 0) setActiveChannel(data[0])
+                if (Array.isArray(data)) {
+                    setChannels(data)
+                    if (data.length > 0) setActiveChannel(data[0])
+                }
+                setIsLoading(false)
+            })
+            .catch(err => {
+                console.error('Failed to load channels:', err)
                 setIsLoading(false)
             })
     }, [])
@@ -52,12 +58,16 @@ export default function ChatRoomPage() {
     const fetchMessages = React.useCallback(() => {
         if (!activeChannel) return
         fetch(`/api/chat/messages?channelId=${activeChannel.id}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch')
+                return res.json()
+            })
             .then(data => {
                 if (Array.isArray(data)) {
                     setMessages(data)
                 }
             })
+            .catch(err => console.error('Polling error:', err))
     }, [activeChannel])
 
     React.useEffect(() => {
