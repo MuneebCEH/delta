@@ -348,6 +348,13 @@ export function MainSidebar({ className }: SidebarProps) {
                             />
                         </SidebarCollapsibleItem>
                         <SidebarItem
+                            href="/chat"
+                            icon={<MessageSquare className="h-4 w-4" />}
+                            label="Chat Room"
+                            active={pathname === "/chat"}
+                            collapsed={isCollapsed}
+                        />
+                        <SidebarItem
                             href="/team"
                             icon={<User className="h-4 w-4" />}
                             label="Team"
