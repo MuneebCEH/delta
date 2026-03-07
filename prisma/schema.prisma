@@ -29,6 +29,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   chatMessages  ChatMessage[]
+  channels      ChatChannel[] @relation("ChannelParticipants")
 }
 
 enum Role {
@@ -228,9 +229,16 @@ model ChatChannel {
   id          String        @id @default(cuid())
   name        String
   description String?
+  type        ChannelType   @default(PUBLIC)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   messages    ChatMessage[]
+  participants User[]       @relation("ChannelParticipants")
+}
+
+enum ChannelType {
+  PUBLIC
+  DIRECT
 }
 
 model ChatMessage {
